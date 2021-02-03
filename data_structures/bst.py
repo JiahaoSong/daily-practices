@@ -20,11 +20,14 @@ class BST:
         self.root = None
         self.n = 0
     
+
     def empty(self):
         return self.root is None
 
+
     def size(self):
         return self.n
+
 
     def height(self):
         """
@@ -40,6 +43,7 @@ class BST:
         
         return height_aux(self.root)
 
+
     def search(self, x):
         def search_aux(node):
             if (node is None):
@@ -52,6 +56,7 @@ class BST:
                 return True
         
         return search_aux(self.root)
+
 
     def depth(self, target):
         """
@@ -73,6 +78,7 @@ class BST:
     def insert(self, x):
         def insert_aux(node) -> object:
             if (node is None):
+                self.n += 1
                 return self.Node(x)
             elif (x < node.val):
                 node.left = insert_aux(node.left)
@@ -81,9 +87,7 @@ class BST:
             else:
                 # Duplicate value found
                 pass
-            
-            self.size += 1
-            
+
             return node
         
         self.root = insert_aux(self.root)
@@ -112,6 +116,8 @@ class BST:
                 return None
             elif (x == node.val):
                 # Target found, prepare to delete
+                self.n -= 1
+
                 if ((node.left is None) and (node.right is None)):
                     return None
                 elif (node.left is None):
@@ -121,9 +127,10 @@ class BST:
                     # Left subtree only, cut and paste
                     return node.left
                 else:
-                    # Both of children not empty
+                    # Both of children exist
                     # Find the successor (candidate) in the right subtree
-                    # (predecessor should do the same job)
+                    # (predecessor should do the same job) and
+                    # do the transplantation
                     node.right = transplant(node.right, node)
                     return node
             elif (x < node.val):
@@ -134,14 +141,15 @@ class BST:
             return node
         
         self.root = delete_aux(self.root)
+        
             
-
     def print(self):
         """
-        Prints out the in-order traverse of this tree
+        Prints out the traverse of this tree
         """
         pre_order_results = []
         in_order_results = []
+        post_order_results = []
 
         def pre_order_traverse(node):
             if (node is None):
@@ -157,6 +165,13 @@ class BST:
                 in_order_traverse(node.left)
                 in_order_results.append(node.val)
                 in_order_traverse(node.right)
+        
+        def post_order_traverse(node):
+            if (node is None):
+                return
+            post_order_traverse(node.left)
+            post_order_traverse(node.right)
+            post_order_results.append(node.val)
 
         pre_order_traverse(self.root)
         in_order_traverse(self.root)
