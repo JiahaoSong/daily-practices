@@ -5,7 +5,39 @@ from algorithms.binary_search import binary_search, search_in_rotated_sorted_arr
 from algorithms.sort import sort
 from data_structures.min_heap import MinHeap
 from data_structures.bst import BST
+from data_structures.linked_list import LinkedList
 
+def linkedlist_test():
+    A = [-1, 0, 1, 2, 3, -100, 100]
+    l = LinkedList()
+    
+    for x in A:
+        l.insert(x)
+
+    print("#Printed linkedlist:")
+    l.print()
+
+    print("!Deleting {}...".format(100))
+    l.delete(100)
+    print("!Deleting {}...".format(-111))
+    l.delete(-111)
+    print("#Printed linkedlist:")
+    l.print()
+
+    print("!Reversing the whole list...")
+    l.reverse()
+    print("#Printed linkedlist:")
+    l.print()
+
+    print("!Reversing the list by 2...")
+    l.reverse_k(2)
+    print("#Printed linkedlist:")
+    l.print()
+
+    print("!Reversing the list by 1... (should be itself)")
+    l.reverse_k(1)
+    print("#Printed linkedlist:")
+    l.print()
 
 def sorting_test():
     A = [-1, 0, 1, 2, 3, -100, 100]
