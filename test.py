@@ -6,6 +6,17 @@ from algorithms.sort import sort
 from data_structures.min_heap import MinHeap
 from data_structures.bst import BST
 from data_structures.linked_list import LinkedList
+from data_structures.disjoint_sets import DisjointSets
+
+def disjoint_sets_test():
+    ds = DisjointSets(1000000)
+    ds.union(1, 3)
+    ds.union(1, 5)
+    ds.union(5, 7)
+    ds.union(3, 5)
+
+    print("({}) 1 connected to 7.".format(ds.is_connected(1, 7)))
+    print("#sets = {}".format(ds.size()))
 
 def linkedlist_test():
     A = [-1, 0, 1, 2, 3, -100, 100]
