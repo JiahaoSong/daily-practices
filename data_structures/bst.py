@@ -69,9 +69,11 @@ class BST:
             elif (target == node.val):
                 return 0
             elif (target < node.val):
-                return depth_aux(node.left) + 1
+                depth = depth_aux(node.left) + 1
+                return depth if (depth >= 0) else -1
             else:
-                return depth_aux(node.right) + 1
+                depth = depth_aux(node.right) + 1
+                return depth if (depth >= 0) else -1
         
         return depth_aux(self.root) if self.search(target) else -1
             

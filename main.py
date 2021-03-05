@@ -2,7 +2,7 @@ from test import *
         
 
 def main():
-    disjoint_sets_test()
+    built_in_dijkstra_test()
 
 if (__name__ == "__main__"):
     main()
