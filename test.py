@@ -2,18 +2,36 @@ import math
 import sys 
 
 from algorithms.binary_search import binary_search, search_in_rotated_sorted_array
+from algorithms.kmp import kmp
 from algorithms.knapsack import knapsack
-from algorithms.shortest_path import my_dijkstra, generate_path, built_in_dijkstra
+from algorithms.shortest_path import dijkstra, dijkstra_with_heapq
 from algorithms.sort import sort
 
 from data_structures.bst import BST
 from data_structures.disjoint_sets import DisjointSets
 from data_structures.graph import Graph
 from data_structures.linked_list import LinkedList
-from data_structures.min_heap import MinHeap
 from data_structures.priority_queue import PriorityQueue
 
-def built_in_dijkstra_test():
+def kmp_test():
+    txt = "AAAAAAAAAAAAAAAAAB"
+    pat = "AAAAB"
+    for index in kmp(txt, pat):
+        print("Pattern found at index {}".format(index))
+
+    txt = "abxabcabcaby"
+    pat = "abcaby"
+    for index in kmp(txt, pat):
+        print("Pattern found at index {}".format(index))
+
+def dijkstra_test():
+    def generate_path(edge_to, goal):
+        vertex = goal
+        while (vertex is not None):
+            shortest_path.append(vertex)
+            vertex = edge_to[vertex]
+        shortest_path.reverse()
+
     g = Graph(7)
     g.add_edge(0, 1, 2);
     g.add_edge(0, 2, 1);
@@ -40,78 +58,72 @@ def built_in_dijkstra_test():
 
     start = 0;
     goal = 6;
-    dist_to, edge_to = built_in_dijkstra(g, start)
+    dist_to, edge_to, seen = dijkstra(g, start)
+
+    # This should be 10
+    print("--------Dijkstra--------")
+    print("The shortest path from 0 to 6 is {}".format(
+          dist_to[goal]))
+    print(dist_to)
+    print(seen)
+    # This should be 0, 1, 4, 6
+    shortest_path = []
+    generate_path(edge_to, goal)
+    print(edge_to)
+    print(shortest_path)
+
+    print("--------Dijkstra with Heapq--------")
+    dist_to, edge_to, seen = dijkstra_with_heapq(g, start)
 
     # This should be 10
     print("The shortest path from 0 to 6 is {}".format(
           dist_to[goal]))
     print(dist_to)
+    print(seen)
     # This should be 0, 1, 4, 6
-    print("The path is {}".format(
-          generate_path(edge_to, start, goal)
-    ))
+    shortest_path = []
+    generate_path(edge_to, goal)
+    print(edge_to)
+    print(shortest_path)
 
-
-def my_dijkstra_test():
-    g = Graph(7)
-    g.add_edge(0, 1, 2);
-    g.add_edge(0, 2, 1);
-
-    g.add_edge(1, 2, 5);
-    g.add_edge(1, 3, 11);
-    g.add_edge(1, 4, 3);
-
-    g.add_edge(2, 5, 15);
-
-    g.add_edge(3, 4, 2);
-
-    g.add_edge(4, 2, 1);
-    g.add_edge(4, 5, 4);
-    g.add_edge(4, 6, 5);
-
-    g.add_edge(6, 3, 1);
-    g.add_edge(6, 5, 1);
-
-    print("#Vertices: {}\n#Edges: {}".format(
-          g.vertex_size(),
-          g.edge_size()
-    ))
-
-    start = 0;
-    goal = 6;
-    dist_to, edge_to = my_dijkstra(g, start)
-
-    # This should be 10
-    print("The shortest path from 0 to 6 is {}".format(
-          dist_to[goal]))
-    print(dist_to)
-    # This should be 0, 1, 4, 6
-    print("The path is {}".format(
-          generate_path(edge_to, start, goal)
-    ))
-    
 
 def priority_queue_test():
     pq = PriorityQueue()
+    A = [(1000, "a big nubmer"), 
+         (30, "has"), (15, "a"), (90, "priority"), 
+         (100, "queue"), (30, "same priority as 'has'"),
+         (45, "new item 1"), (0, "new item 2")]
+
+    for p, item in A:
+        print("!Pushing ({}, {})...".format(p, item))
+        pq[item] = p
+    print("#Current size of the PQ: {}".format(len(pq)))
+    print(pq)
+    sorted_arr = [pq.pop() for _ in range(len(pq))]
+    print(sorted_arr)
+    
+    print("#Current size of the PQ: {}".format(len(pq)))
+    
+    print("----------Replace check----------")
+    # Replace check
     A = [(1000, "a big nubmer"), 
          (30, "has"), (15, "a"), (90, "priority"), 
          (100, "queue"), (30, "same priority as 'has'")]
 
     for p, item in A:
         print("!Pushing ({}, {})...".format(p, item))
-        pq.push(p, item)
-    print("#Current size of the PQ: {}".format(pq.size()))
-
-    for i in range(1, pq.size() + 1):
-        print(pq.pq[i])
-
+        pq[item] = p
     print("!Changing the priority of 'has' from 30 to 45...")
-    pq.change_priority(45, "has")
+    pq["has"] = 45
     print("!Changing the priority of 'priority' from 90 to 0...")
-    pq.change_priority(0, "priority")
+    pq["priority"] = 0
+    print("#Current size of the PQ: {}".format(len(pq)))
+    print(pq)
 
-    for _ in range(len(A)):
-        print(pq.pop())
+    sorted_arr = [pq.pop() for _ in range(len(pq))]
+    print(sorted_arr)
+
+    print("#Current size of the PQ: {}".format(len(pq)))
 
 
 def knapsack_test():

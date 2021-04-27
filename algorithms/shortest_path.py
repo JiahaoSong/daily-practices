@@ -1,80 +1,50 @@
-from data_structures.priority_queue import PriorityQueue
+from collections import defaultdict
 from data_structures.graph import Graph
+from data_structures.priority_queue import PriorityQueue
 import heapq
-import math
 
-def generate_path(edge_to, src, tar):
-    ans = []
-    def gen_path_aux(cur):
-        if (cur != src):
-            gen_path_aux(edge_to[cur])
-        ans.append(cur)
+def dijkstra(G: Graph, src):
+    dist_to = defaultdict(lambda: float("inf"))
+    edge_to = defaultdict(lambda: None)
+    priority_queue = PriorityQueue()
+    for u in range(len(G)):
+        priority_queue.push(u, float("inf"))
+    
+    seen = set()
+    dist_to[src] = 0
+    while (priority_queue):
+        _, u = priority_queue.pop()
+        seen.add(u)
 
-    gen_path_aux(tar)
-    return ans
-
-
-def my_dijkstra(graph : Graph, src):
-    """
-    Implements dijkstra algorithm using my own priority queue
-    """
-    dist_to = {}
-    edge_to = {}
-    pq = PriorityQueue()
-    visited = set()
-
-    pq.push(0, src)
-    while (pq.size() != 0):
-        dist_u, u = pq.pop()
-        visited.add(u)
-        dist_to[u] = dist_u
-
-        for v, w in graph.neighbors(u):
-            if (v not in visited):
-                dist_v = math.inf
-                if (v in dist_to):
-                    dist_v = dist_to[v]
-
-                if (dist_u + w < dist_v):
-                    dist_v = dist_u + w
-                    if (pq.contains(v)):
-                        # Relaxation
-                        pq.change_priority(dist_v, v)
-                    else:
-                        pq.push(dist_v, v)
-                    
-                    dist_to[v] = dist_v
-                    edge_to[v] = u
-        
-    return dist_to, edge_to
+        for v, w in G.neighbors(u):
+            # Relaxation
+            if (dist_to[v] > dist_to[u] + w):
+                dist_to[v] = dist_to[u] + w 
+                edge_to[v] = u 
+                priority_queue.replace(v, dist_to[u] + w)
+    
+    return dist_to, edge_to, seen
 
 
-def built_in_dijkstra(graph : Graph, src):
-    dist_to = {}
-    edge_to = {}
-    pq = []
-    visited = set()
+def dijkstra_with_heapq(G: Graph, src):
+    dist_to = defaultdict(lambda: float("inf"))
+    edge_to = defaultdict(lambda: None)
 
-    heapq.heappush(pq, (0, src))
-    while (pq):
-        dist_u, u = heapq.heappop(pq)
-        if (u in visited):
+    priority_queue = [(float("inf"), u) for u in range(len(G))]
+    heapq.heapify(priority_queue)
+
+    seen = set()
+    dist_to[src] = 0
+    while (priority_queue):
+        _, u = heapq.heappop(priority_queue)
+        if (u in seen):
             continue
+        seen.add(u)
 
-        visited.add(u)
-        dist_to[u] = dist_u
+        for v, w in G.neighbors(u):
+            if (dist_to[v] > dist_to[u] + w):
+                dist_to[v] = dist_to[u] + w
+                edge_to[v] = u 
+                heapq.heappush(priority_queue, (dist_to[u] + w, v))
 
-        for v, w in graph.neighbors(u):
-            if (v not in visited):
-                dist_v = math.inf
-                if (v in dist_to):
-                    dist_v = dist_to[v]
-
-                if (dist_u + w < dist_v):
-                    dist_v = dist_u + w
-                    heapq.heappush(pq, (dist_v, v))
-                    
-                    dist_to[v] = dist_v
-                    edge_to[v] = u
-        
-    return dist_to, edge_to
+    return dist_to, edge_to, seen

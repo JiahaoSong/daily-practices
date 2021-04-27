@@ -7,8 +7,10 @@ class Graph:
         self.adj_list = [[] for _ in range(n_v)]
         self.n_v = n_v
         self.n_e = 0
-
     
+    def __len__(self):
+        return len(self.adj_list)
+        
     def add_edge(self, u, v, w):
         self.adj_list[u].append((v, w))
         self.n_e += 1
